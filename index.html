@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Resume Builder</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title animate-fade-in">Resume Builder</h1>
+            <p class="subtitle animate-fade-in-delay">Create your professional resume in minutes</p>
+            <div class="header-controls">
+                <div class="save-status" id="saveStatus">
+                    <span class="save-icon">💾</span>
+                    <span id="saveText">Auto-saved</span>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <span class="progress-text" id="progressText">0% Complete</span>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-icon" id="themeToggle" title="Toggle Theme">🌓</button>
+                    <select id="templateSelect" class="template-select" title="Choose Template">
+                        <option value="classic">Classic</option>
+                        <option value="modern">Modern</option>
+                        <option value="minimalist">Minimalist</option>
+                        <option value="creative">Creative</option>
+                    </select>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- Form Section -->
+            <div class="form-section" id="formSection">
+                <div class="form-container">
+                    <!-- Personal Information -->
+                    <section class="form-group animate-slide-in" data-section="personal">
+                        <div class="section-header">
+                            <h2 class="section-title">Personal Information</h2>
+                            <label class="toggle-section">
+                                <input type="checkbox" class="section-toggle" checked data-section="personal">
+                                <span>Show</span>
+                            </label>
+                        </div>
+                        <div class="profile-picture-container">
+                            <div class="profile-preview" id="profilePreview">
+                                <img id="profileImage" src="" alt="Profile" style="display: none;">
+                                <span class="profile-placeholder">👤</span>
+                            </div>
+                            <div class="profile-upload">
+                                <input type="file" id="profileUpload" accept="image/*" style="display: none;">
+                                <button type="button" class="btn-secondary btn-small" id="uploadProfileBtn">Upload Photo</button>
+                                <button type="button" class="btn-secondary btn-small" id="removeProfileBtn" style="display: none;">Remove</button>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <div class="input-wrapper">
+                                <input type="text" id="fullName" placeholder="Full Name" required>
+                                <span class="error-message" id="fullNameError"></span>
+                            </div>
+                            <div class="input-wrapper">
+                                <input type="email" id="email" placeholder="Email Address" required>
+                                <span class="error-message" id="emailError"></span>
+                            </div>
+                            <div class="input-wrapper">
+                                <input type="tel" id="phone" placeholder="Phone Number" required>
+                                <span class="error-message" id="phoneError"></span>
+                            </div>
+                            <div class="input-wrapper">
+                                <input type="text" id="location" placeholder="Location (City, State)">
+                            </div>
+                            <div class="input-wrapper">
+                                <input type="url" id="linkedin" placeholder="LinkedIn Profile (optional)">
+                            </div>
+                            <div class="input-wrapper">
+                                <input type="url" id="portfolio" placeholder="Portfolio Website (optional)">
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Professional Summary -->
+                    <section class="form-group animate-slide-in" data-section="summary">
+                        <div class="section-header">
+                            <h2 class="section-title">Professional Summary</h2>
+                            <label class="toggle-section">
+                                <input type="checkbox" class="section-toggle" checked data-section="summary">
+                                <span>Show</span>
+                            </label>
+                        </div>
+                        <div class="input-wrapper">
+                            <textarea id="summary" placeholder="Write a brief summary about yourself..." rows="4" maxlength="500"></textarea>
+                            <span class="char-counter"><span id="summaryCounter">0</span>/500</span>
+                        </div>
+                    </section>
+
+                    <!-- Skills -->
+                    <section class="form-group animate-slide-in" data-section="skills">
+                        <div class="section-header">
+                            <h2 class="section-title">Skills</h2>
+                            <label class="toggle-section">
+                                <input type="checkbox" class="section-toggle" checked data-section="skills">
+                                <span>Show</span>
+                            </label>
+                        </div>
+                        <div class="skill-category-selector">
+                            <select id="skillCategory" class="skill-category">
+                                <option value="technical">Technical Skills</option>
+                                <option value="soft">Soft Skills</option>
+                                <option value="tools">Tools & Software</option>
+                                <option value="languages">Programming Languages</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="skills-container">
+                            <input type="text" id="skillInput" placeholder="Add a skill and press Enter">
+                            <div class="skills-list" id="skillsList"></div>
+                        </div>
+                    </section>
+
+                    <!-- Work Experience -->
+                    <section class="form-group animate-slide-in" data-section="experience">
+                        <div class="section-header">
+                            <h2 class="section-title">Work Experience</h2>
+                            <label class="toggle-section">
+                                <input type="checkbox" class="section-toggle" checked data-section="experience">
+                                <span>Show</span>
+                            </label>
+                        </div>
+                        <div id="experienceContainer" class="sortable-container">
+                            <div class="experience-item sortable-item" draggable="true">
+                                <div class="item-header">
+                                    <span class="drag-handle">☰</span>
+                                    <button type="button" class="btn-remove" title="Remove">×</button>
+                                </div>
+                                <input type="text" class="exp-job-title" placeholder="Job Title" required>
+                                <input type="text" class="exp-company" placeholder="Company Name" required>
+                                <input type="text" class="exp-location" placeholder="Location">
+                                <div class="date-inputs">
+                                    <input type="month" class="exp-start-date" placeholder="Start Date">
+                                    <input type="month" class="exp-end-date" placeholder="End Date">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" class="exp-current"> Current Job
+                                    </label>
+                                </div>
+                                <textarea class="exp-description" placeholder="Job Description (one per line)"></textarea>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-add" id="addExperience">+ Add Another Experience</button>
+                    </section>
+
+                    <!-- Education -->
+                    <section class="form-group animate-slide-in" data-section="education">
+                        <div class="section-header">
+                            <h2 class="section-title">Education</h2>
+                            <label class="toggle-section">
+                                <input type="checkbox" class="section-toggle" checked data-section="education">
+                                <span>Show</span>
+                            </label>
+                        </div>
+                        <div id="educationContainer" class="sortable-container">
+                            <div class="education-item sortable-item" draggable="true">
+                                <div class="item-header">
+                                    <span class="drag-handle">☰</span>
+                                    <button type="button" class="btn-remove" title="Remove">×</button>
+                                </div>
+                                <input type="text" class="edu-degree" placeholder="Degree (e.g., Bachelor of Science)" required>
+                                <input type="text" class="edu-school" placeholder="School/University Name" required>
+                                <input type="text" class="edu-location" placeholder="Location">
+                                <input type="month" class="edu-date" placeholder="Graduation Date">
+                            </div>
+                        </div>
+                        <button type="button" class="btn-add" id="addEducation">+ Add Another Education</button>
+                    </section>
+
+                    <!-- Projects -->
+                    <section class="form-group animate-slide-in" data-section="projects">
+                        <div class="section-header">
+                            <h2 class="section-title">Projects</h2>
+                            <label class="toggle-section">
+                                <input type="checkbox" class="section-toggle" checked data-section="projects">
+                                <span>Show</span>
+                            </label>
+                        </div>
+                        <div id="projectsContainer" class="sortable-container">
+                            <div class="project-item sortable-item" draggable="true">
+                                <div class="item-header">
+                                    <span class="drag-handle">☰</span>
+                                    <button type="button" class="btn-remove" title="Remove">×</button>
+                                </div>
+                                <input type="text" class="proj-name" placeholder="Project Name" required>
+                                <input type="text" class="proj-tech" placeholder="Technologies Used (comma separated)">
+                                <input type="url" class="proj-url" placeholder="Project URL (optional)">
+                                <textarea class="proj-description" placeholder="Project Description"></textarea>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-add" id="addProject">+ Add Another Project</button>
+                    </section>
+
+                    <!-- Certifications -->
+                    <section class="form-group animate-slide-in" data-section="certifications">
+                        <div class="section-header">
+                            <h2 class="section-title">Certifications</h2>
+                            <label class="toggle-section">
+                                <input type="checkbox" class="section-toggle" checked data-section="certifications">
+                                <span>Show</span>
+                            </label>
+                        </div>
+                        <div id="certificationsContainer" class="sortable-container">
+                            <div class="certification-item sortable-item" draggable="true">
+                                <div class="item-header">
+                                    <span class="drag-handle">☰</span>
+                                    <button type="button" class="btn-remove" title="Remove">×</button>
+                                </div>
+                                <input type="text" class="cert-name" placeholder="Certification Name" required>
+                                <input type="text" class="cert-issuer" placeholder="Issuing Organization" required>
+                                <input type="month" class="cert-date" placeholder="Issue Date">
+                                <input type="url" class="cert-url" placeholder="Credential URL (optional)">
+                            </div>
+                        </div>
+                        <button type="button" class="btn-add" id="addCertification">+ Add Another Certification</button>
+                    </section>
+
+                    <!-- Languages -->
+                    <section class="form-group animate-slide-in" data-section="languages">
+                        <div class="section-header">
+                            <h2 class="section-title">Languages</h2>
+                            <label class="toggle-section">
+                                <input type="checkbox" class="section-toggle" checked data-section="languages">
+                                <span>Show</span>
+                            </label>
+                        </div>
+                        <div id="languagesContainer" class="sortable-container">
+                            <div class="language-item sortable-item" draggable="true">
+                                <div class="item-header">
+                                    <span class="drag-handle">☰</span>
+                                    <button type="button" class="btn-remove" title="Remove">×</button>
+                                </div>
+                                <input type="text" class="lang-name" placeholder="Language" required>
+                                <select class="lang-proficiency">
+                                    <option value="Native">Native</option>
+                                    <option value="Fluent">Fluent</option>
+                                    <option value="Advanced">Advanced</option>
+                                    <option value="Intermediate">Intermediate</option>
+                                    <option value="Basic">Basic</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-add" id="addLanguage">+ Add Another Language</button>
+                    </section>
+
+                    <!-- Action Buttons -->
+                    <div class="button-container animate-fade-in">
+                        <div class="action-buttons">
+                            <button type="button" class="btn-secondary" id="importBtn">📥 Import JSON</button>
+                            <button type="button" class="btn-secondary" id="exportBtn">📤 Export JSON</button>
+                            <button type="button" class="btn-secondary" id="undoBtn" title="Undo (Ctrl+Z)">↶ Undo</button>
+                            <button type="button" class="btn-secondary" id="redoBtn" title="Redo (Ctrl+Y)">↷ Redo</button>
+                            <input type="file" id="importFile" accept=".json" style="display: none;">
+                        </div>
+                        <div class="keyboard-hints">
+                            <small>💡 Press <kbd>Ctrl+S</kbd> to save, <kbd>Ctrl+G</kbd> to generate</small>
+                        </div>
+                        <button type="button" class="btn-generate" id="generateBtn">Generate Resume</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resume Preview Section -->
+            <div class="resume-section hidden" id="resumeSection">
+                <div class="resume-controls">
+                    <button class="btn-back" id="backBtn">← Back to Edit</button>
+                    <div class="resume-actions">
+                        <button class="btn-secondary" id="printBtn">🖨️ Print</button>
+                        <button class="btn-download" id="downloadBtn">📄 Download PDF</button>
+                    </div>
+                </div>
+                <div class="resume-preview" id="resumePreview">
+                    <!-- Resume content will be generated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="script.js"></script> 
+</body>
+</html>
+
